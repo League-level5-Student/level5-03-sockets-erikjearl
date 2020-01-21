@@ -22,7 +22,7 @@ public class ChatApp extends JFrame {
 	JPanel panel;
 	
 	JTextField tField = new JTextField(15);
-	JLabel label = new JLabel("message");
+	JLabel label = new JLabel("messages:");
 	JButton b = new JButton("send");
 	
 	Server server;
