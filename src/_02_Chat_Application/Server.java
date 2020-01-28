@@ -1,4 +1,4 @@
-package _00_Click_Chat.networking;
+package _02_Chat_Application;
 
 import java.io.EOFException;
 import java.io.IOException;
@@ -20,14 +20,16 @@ public class Server {
 	ObjectOutputStream os;
 	ObjectInputStream is;
 
-	public Server(int port) {
+	ChatApp chatApp;
+	
+	public Server(ChatApp app, int port) {
 		this.port = port;
+		this.chatApp = app;
 	}
-
-	public void start(){
+	
+	public void start() {
 		try {
 			server = new ServerSocket(port, 100);
-
 			connection = server.accept();
 
 			os = new ObjectOutputStream(connection.getOutputStream());
@@ -37,15 +39,15 @@ public class Server {
 
 			while (connection.isConnected()) {
 				try {
-					JOptionPane.showMessageDialog(null, is.readObject());
-					System.out.println(is.readObject());
+					String msg = (String) is.readObject();
+					System.out.println(msg);
+					this.chatApp.addMessage(msg);
 				}catch(EOFException e) {
 					JOptionPane.showMessageDialog(null, "Connection Lost");
 					System.exit(0);
 				}
 			}
-
-		} catch (Exception e) {
+		} catch (Exception e){
 			e.printStackTrace();
 		}
 	}
@@ -54,25 +56,24 @@ public class Server {
 		try {
 			return InetAddress.getLocalHost().getHostAddress();
 		} catch (UnknownHostException e) {
-			return "ERROR!!!!!";
+			return "ERROR";
 		}
 	}
 
 	public int getPort() {
 		return port;
 	}
-
-	public void sendClick() {
+	
+	public void sendMessage(String message) {
 		try {
 			if (os != null) {
-				os.writeObject("CLICK SENT FROM SERVER");
+				os.writeObject(message);
 				os.flush();
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
-
-
-
+	
+	
 }
